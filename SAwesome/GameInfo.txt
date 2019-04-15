@@ -1,0 +1,13 @@
+IFID: 573a8b18-1008-ca66-9580-9a156f82eefa
+Name: Hide and Seek
+Byline: by Cindy
+HtmlByline: by <a href="mailto:whatever@nospam.org">  CINDY</a>
+AuthorEmail: CINDY <whatever@nospam.org>
+Desc: COMP1917 Something Awesome.
+HtmlDesc: COMP1917 Something Awesome.
+Version: 1.0
+ReleaseDate: 2019-04-16
+Language: en-US
+LicenseType: Freeware
+CopyingRules: Nominal cost only; compilations allowed
+PresentationProfile: Default

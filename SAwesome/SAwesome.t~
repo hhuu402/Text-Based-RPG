@@ -1,0 +1,138 @@
+#charset "us-ascii" 
+#include <adv3.h> 
+#include <en_us.h> 
+
+versionInfo: GameID 
+IFID = '573a8b18-1008-ca66-9580-9a156f82eefa' 
+    name = 'Hide and Seek' 
+    byline = 'by Cindy' 
+    htmlByline = 'by <a href="mailto:whatever@nospam.org"> 
+                  CINDY</a>' 
+    version = '1.0' 
+    authorEmail = 'CINDY <whatever@nospam.org>' 
+    desc = 'COMP1917 Something Awesome.' 
+    htmlDesc = 'COMP1917 Something Awesome.' 
+
+    showCredit() 
+    { 
+        /* show our credits */ 
+        "The TADS 3 language and library were created by Michael J.  
+Roberts.<.p>";  
+
+       
+        "\b"; 
+    } 
+    showAbout() 
+    { 
+        "<i>Hide and Seek</i><.p> 
+        Something Awesome Project"; 
+    } 
+; 
+
+outsideCottage: OutdoorRoom
+    roomName = 'Ouside a Cottage'
+    desc = "You stand just before a cottage that is nestled on the outskirts of a town to the south. To the east there is a vast forest. It looks rather foreboding.
+    So, what were you doing here again? Ah, right. This is your home. You were playing hide and seek with your brother. Being the good, responsible seeker that you are, you now must embark on a journey to find your little brother.
+    "
+    east = forest
+    //south = town
+    dobjFor(Enter) remapTo(In)
+    in = insideCottage
+    west asExit(in)
+; 
+
+insideCottage: Room 'Inside Cottage'
+	"You enter the cottage, cautiously shutting the door so the squeal of the hinge could escape unnoticed. The air is cold. The door exiting is to the east. To north is the living room. To west of you is the room shared by you and your brother."
+	
+north: FakeConnector {"Before you can approach the living room, you can already hear your parents. Your mother's angry screeching fills the empty hallway. You can't hear your father yet, and you're not sure that you want to. It will be for your own good that they don't see you. You should go back."}
+	west =bedroom
+	out = outsideCottage
+	east asExit(out)
+;
++ chair: Chair 'wooden chair' 'wooden chair'
+    "It's a plain wooden chair."
+    initSpecialDesc = "A plain wooden chair sits in a corner"
+;
+
+bedroom: Room 'Bedroom'
+	"It's a small room that you and your brother share. The door exiting is to the east."
+	out = insideCottage
+	east asExit(out)
+;
+bed: Thing'bed''The single bed sits against the wall. For now, it is still big enough to accomodate both you and your brother' @bedroom
+    "It's a bed. The blankets are a messy bundle on top of it. Maybe you should examine it to see if your brother is hiding beneath it."
+}
+
+forest: OutdoorRoom 'Deep in the Forest'
+	"Through the deep foliage you catch a glimpse of a building to the west. A track leads to northeast."
+	west = outsideCottage
+	northeast = clearing
+;
+
+clearing: OutdoorRoom 'Clearing'
+	"A tall oak stands in the middle of this clearing. What an average tree. One path winds to the southwest, and another to north."
+    southwest = forest
+	up: OneWayRoomConnector
+	{
+		destination = topOfTree
+		canTravelerPass(traveler) {return traveler.isIn(chair);}
+		explainTravelerBarrier(traveler)
+			{"The lowest branch is too high for you to reach.";}
+			travelDesc = "By standing on the chair you just manage to reach the lowest branch and you manage to haul yourself up the tree. <.p>"
+	}
+    north: FakeConnector {"Something in your guts tells you it's a bad idea to go that way actually."}
+;
+ 
++ tree: Fixture 'tall oak tree' 'tree'
+    "Standing lonesomely in the middle of the clearing is this oak tree. While it seems boring, it does look easy enough to climb."
+    dobjFor(Climb) remapTo(Up)
+;
+
+topOfTree: OutdoorRoom 'At the top of the tree'
+	"You climb the tree. Wow. This tree is boring after all. Can we go back down now?"
+	down = clearing
+;
+
+/*
+cottage: Thing
+	vocabWords = 'pretty little cottage/house/building'
+	name = 'pretty little cottage'
+	desc = "It's such a pretty little cottage. You can almost imagine there to be a fireplace inside. It is surrounded by a white fence and bushes of roses. The windows frames are painted in green."
+	location = outsideCottage
+;
+*/
+
+cottage : Thing 'pretty little cottage/house/building'
+	'plain cottage that is your home' @outsideCottage
+	"It's a rather plain cottage. Your family is quite poor, so it was a lot easier to live outside the town than inside it. Even though there are no other children around, you didn't mind. The grassland and the conjoined forest gave you plenty of space to play with your brother."
+;    
+
+
+/* HOW TO DO DECORATIONS
++ cottage: Decoration 'pretty little cottage/house/building' 'pretty little cottage'   
+   "It's just the sort of pretty little cottage that townspeople dream of living in, with roses round the door and a neat little window frame freshly painted in green. "    
+; 
+
+
+study: Room 'a house' "A large desk stands under window";
++ desk: Heavy, Surface 'desk' 'desk' "This large desk has a drawer";
+*/
+
+me: Actor 
+    /* the initial location */ 
+    location = outsideCottage 
+; 
+
+gameMain: GameMainDef 
+     initialPlayerChar = me 
+     showIntro() 
+     { 
+       "Welcome to 'Hide and Seek' - Cindy's Something Awesome Project!\b"; 
+     } 
+     showGoodbye() 
+     { 
+       "<.p>Thanks for playing!\b"; 
+     } 
+     maxScore = 7      
+     beforeRunsBeforeCheck = nil      
+; 
